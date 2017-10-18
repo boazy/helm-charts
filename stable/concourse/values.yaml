@@ -371,6 +371,10 @@ worker:
   ##
   minAvailable: 1
 
+  ## Whether to use StatefulSet
+  ##
+  stateful: true
+
   ## Configure resource requests and limits.
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -417,6 +421,11 @@ worker:
   fatalErrors: |-
     guardian.api.garden-server.create.failed
     unknown handle
+  
+  ## Environment variables to be added to the worker pods.
+  ##
+  # env:
+  #   http_proxy: http://proxy.example.com:8080
 
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes

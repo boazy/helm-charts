@@ -1,5 +1,10 @@
+{{- if .Values.worker.stateful }}
 apiVersion: apps/v1beta1
 kind: StatefulSet
+{{- else }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+{{- end }}
 metadata:
   name: {{ template "concourse.worker.fullname" . }}
   labels:
@@ -9,7 +14,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 
 spec:
+{{- if .Values.worker.stateful }}
   serviceName: {{ template "concourse.worker.fullname" . }}
+{{- end }}
   replicas: {{ .Values.worker.replicas }}
   template:
     metadata:
@@ -57,6 +64,10 @@ spec:
                   - "-c"
                   - "concourse retire-worker --name=${HOSTNAME}"
           env:
+            {{- range $key, $value := .Values.worker.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
             - name: CONCOURSE_TSA_HOST
               valueFrom:
                 configMapKeyRef:
